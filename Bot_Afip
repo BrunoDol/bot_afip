@@ -1,0 +1,32 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+import pandas as pd
+import time
+
+# 1) leer el excel
+archivo = r"C:\Users\pc\Desktop\Python\bot_afip\facturas.xlsx"
+df = pd.read_excel(archivo)
+
+# tomar la primera fila
+primer_factura = df.iloc[0]
+cuit_receptor = str(primer_factura[0])
+importe = str(primer_factura[1])
+concepto = str(primer_factura[2])
+
+# 2) configurar selenium
+servicio = Service(r"E:\Users\bruno\Desktop\python\bot afip\chromedriver-win64\chromedriver.exe")
+driver = webdriver.Chrome(service=servicio)
+
+# 3) esperar a que vos ya tengas la sesión iniciada y parada en la pantalla inicial de RCEL
+time.sleep(10)  # te da 10 segundos para ubicar la pestaña
+
+# 4) click en "Generar Comprobantes"
+try:
+    generar_btn = driver.find_element(By.LINK_TEXT, "Generar Comprobantes")
+    generar_btn.click()
+    print("Hizo click en Generar Comprobantes.")
+except Exception as e:
+    print(f"Error en Generar Comprobantes: {e}")
+
+# dejamos el navegador abierto
